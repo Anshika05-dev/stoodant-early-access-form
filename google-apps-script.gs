@@ -40,6 +40,7 @@ function doPost(e) {
 
 
 if (NOTIFY_EMAIL) {
+  console.log('Lead notification email sent)
   try {
     const subject = `New STOODANT Lead: ${d.studentName || 'Student'} (${d.format || 'Format not specified'})`;
 
