@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Live online Class 10 tuition with doctors and top professionals. 1:1, 1:5 and 1:10 classes, doubts solved instantly. Join the 75-day early access list.">
+<meta property="og:title" content="STOODANT · Class 10 · 75-Day Early Access">
+<meta property="og:description" content="Live 1:1, 1:5 and 1:10 classes with doctors and top professionals. Doubts solved the same moment.">
+<!-- After hosting, change og.png below to its full link (e.g. https://stoodant.com/early-access/og.png) so WhatsApp shows the preview image -->
+<meta property="og:image" content="og.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#12142B">
+<title>STOODANT Early Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Lexend:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: one narrow answer-sheet column. Logo eyes + question counter on top, one question per screen, thumb-sized choices. */
+:root{
+  --paper:#FFFEF8; --surface:#FFFFFF; --ink:#12142B; --muted:#5B5F78; --line:#E8E3D1;
+  --butter:#F8B82E; --butter-soft:#FFF3CB; --on-butter:#12142B; --ok:#1E7F55; --err:#B93C0B;
+  --eye-ring:#12142B; --eye-pupil:#12142B; --glint:#FFFFFF;
+  --display:"Outfit","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0B0D1C; --surface:#14172B; --ink:#F4F1E6; --muted:#A4A7C0; --line:#2A2E49;
+  --butter:#FFC943; --butter-soft:#2A2614; --on-butter:#12142B; --ok:#4FC38C; --err:#FF9A5C;
+  --eye-ring:#F4F1E6; --eye-pupil:#12142B; --glint:#FFFFFF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0B0D1C; --surface:#14172B; --ink:#F4F1E6; --muted:#A4A7C0; --line:#2A2E49;
+  --butter:#FFC943; --butter-soft:#2A2614; --on-butter:#12142B; --ok:#4FC38C; --err:#FF9A5C;
+  --eye-ring:#F4F1E6; --eye-pupil:#12142B; --glint:#FFFFFF; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:540px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.preview-note{font-size:13px;background:var(--butter-soft);border:1px dashed var(--butter);border-radius:12px;padding:10px 12px;color:var(--ink)}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:var(--display);font-weight:800;letter-spacing:.06em;font-size:15px}
+.counter{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--butter);border-radius:99px;transition:width .35s ease}
+
+/* eyes from the logo */
+.eyes{display:flex;align-items:center;justify-content:center;gap:0;position:relative;padding-top:10px}
+.eye{width:64px;height:64px;border-radius:50%;border:8px solid var(--eye-ring);background:var(--butter);position:relative;overflow:hidden}
+.bridge{width:14px;height:7px;background:var(--eye-ring);border-radius:4px;margin-inline:-2px}
+.pupil{position:absolute;width:24px;height:24px;border-radius:50%;background:var(--eye-pupil);left:50%;top:50%;
+  transform:translate(calc(-50% + var(--px,0px)),calc(-50% + var(--py,0px)));transition:transform .18s ease-out}
+.pupil::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--glint);top:4px;right:4px}
+.lid{position:absolute;inset:-2px;background:var(--eye-ring);transform:scaleY(0);transform-origin:top;animation:blink 5.5s infinite}
+@keyframes blink{0%,93%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+.spark{position:absolute;top:0;left:calc(50% - 58px);width:22px;height:18px}
+.spark b{position:absolute;width:5px;height:15px;border-radius:3px;background:var(--butter)}
+.spark b:first-child{left:0;top:6px;transform:rotate(-55deg)}
+.spark b:last-child{left:12px;top:0;transform:rotate(-20deg)}
+.eyes.happy .pupil{width:30px;height:15px;border-radius:30px 30px 0 0;background:transparent;border:6px solid var(--eye-pupil);border-bottom:0;top:58%}
+.eyes.happy .pupil::after{display:none}
+.eyes.happy .lid{animation:none}
+
+/* steps */
+.step{display:flex;flex-direction:column;gap:18px}
+.step.enter{animation:rise .32s ease-out}
+@keyframes rise{from{opacity:.0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+h1,h2{font-family:var(--display);font-weight:800;line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(32px,8.5vw,44px)}
+h2{font-size:clamp(25px,6.5vw,32px)}
+h1 em,h2 em{font-style:normal;background:linear-gradient(transparent 58%,var(--butter) 58%,var(--butter) 92%,transparent 92%);padding-inline:2px}
+.lede{color:var(--muted);margin:0;font-size:16px;max-width:60ch}
+.hint{font-size:13px;color:var(--muted);margin:0}
+
+.formats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fmt{border:2px solid var(--ink);border-radius:14px;padding:12px 10px;text-align:center;background:var(--surface)}
+.fmt strong{display:block;font-family:var(--display);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.fmt span{font-size:12px;color:var(--muted)}
+.perks{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.perks li{display:flex;gap:10px;align-items:flex-start}
+.perks li::before{content:"";flex:none;width:10px;height:10px;margin-top:7px;border-radius:50%;background:var(--butter);box-shadow:0 0 0 3px var(--butter-soft)}
+.offer{background:var(--ink);color:var(--paper);border-radius:18px;padding:16px 18px;display:flex;gap:14px;align-items:center}
+.offer .num{font-family:var(--display);font-weight:800;font-size:46px;line-height:1;color:var(--butter);font-variant-numeric:tabular-nums}
+.offer p{margin:0;font-size:14px;line-height:1.4}
+.offer p b{display:block;font-family:var(--display);font-size:18px;letter-spacing:.02em}
+
+/* fields */
+.field{display:flex;flex-direction:column;gap:8px}
+.field > .label{font-weight:500;font-size:15px}
+.opt{font-weight:300;color:var(--muted);font-size:13px}
+input[type=text],input[type=tel]{width:100%;font:inherit;font-size:17px;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);outline:none;transition:border-color .15s}
+input[type=text]:focus,input[type=tel]:focus{border-color:var(--butter)}
+.tel{display:flex;align-items:stretch;border:2px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.tel:focus-within{border-color:var(--butter)}
+.tel span{display:flex;align-items:center;padding-inline:14px;font-weight:500;border-right:2px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums}
+.tel input{border:0 !important;border-radius:0;min-width:0;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chip span{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:10px 16px;border-radius:999px;border:2px solid var(--line);background:var(--surface);font-weight:500;font-size:15px;transition:background .15s,border-color .15s,transform .1s;user-select:none}
+.chip input:checked + span{background:var(--butter);border-color:var(--butter);color:var(--on-butter)}
+.chip input:checked + span::before{content:"";width:8px;height:14px;border:solid var(--on-butter);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-2px,-2px)}
+.chip input:focus-visible + span{outline:3px solid var(--ink);outline-offset:2px}
+.chip:active span{transform:scale(.97)}
+.chips.big .chip{flex:1 1 140px}
+.chips.big .chip span{width:100%;justify-content:center;min-height:58px;font-size:17px;border-radius:16px}
+
+.cards{display:flex;flex-direction:column;gap:10px}
+.card{position:relative}
+.card input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.card > span{display:grid;grid-template-columns:68px 1fr;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);transition:border-color .15s,background .15s}
+.card .ratio{font-family:var(--display);font-weight:800;font-size:28px;font-variant-numeric:tabular-nums;line-height:1}
+.card .txt{min-width:0;display:flex;flex-direction:column}
+.card .txt b{font-weight:600;font-size:16px}
+.card .txt small{font-size:13px;color:var(--muted)}
+.card input:checked + span{border-color:var(--butter);background:var(--butter-soft)}
+.card input:checked + span .ratio{color:var(--ink)}
+.card input:focus-visible + span{outline:3px solid var(--ink);outline-offset:2px}
+
+/* marks meter */
+.meter{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:10px}
+.meter-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.meter-val{font-family:var(--display);font-weight:800;font-size:56px;line-height:1;font-variant-numeric:tabular-nums}
+.meter-val small{font-size:24px;color:var(--muted);font-weight:600}
+.jump{font-size:13px;font-weight:500;padding:6px 10px;border-radius:999px;background:var(--butter-soft);color:var(--ink)}
+.jump:empty{display:none}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:99px;background:linear-gradient(90deg,var(--butter) var(--fill,75%),var(--line) var(--fill,75%))}
+input[type=range]::-moz-range-track{height:10px;border-radius:99px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:10px;border-radius:99px;background:var(--butter)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:var(--ink);border:5px solid var(--butter);margin-top:-10px}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--ink);border:5px solid var(--butter)}
+input[type=range]:focus-visible{outline:3px solid var(--ink);outline-offset:4px;border-radius:8px}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0}
+.meter .label{font-weight:500;font-size:15px}
+
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--muted);cursor:pointer}
+.consent input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--butter)}
+
+.err{color:var(--err);font-size:14px;font-weight:500;margin:0;min-height:0}
+.err:empty{display:none}
+
+/* nav */
+.nav{display:flex;gap:10px;align-items:center;padding-top:4px}
+button{font:inherit;cursor:pointer}
+.btn{flex:1;min-height:56px;border-radius:16px;border:0;background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.01em;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn.yellow{background:var(--butter);color:var(--on-butter)}
+.btn:focus-visible,.ghost:focus-visible{outline:3px solid var(--butter);outline-offset:3px}
+.ghost{min-height:56px;padding-inline:18px;border-radius:16px;border:2px solid var(--line);background:transparent;color:var(--ink);font-weight:500}
+.arrow{width:18px;height:18px}
+.small{font-size:12px;color:var(--muted);text-align:center;margin:0}
+
+/* success */
+.ref{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:2px dashed var(--line);border-radius:14px;padding:12px 14px}
+.ref span{font-size:13px;color:var(--muted)}
+.ref b{font-family:var(--display);font-size:20px;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.next{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;counter-reset:n}
+.next li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;counter-increment:n}
+.next li::before{content:counter(n);width:34px;height:34px;border-radius:50%;background:var(--butter);color:var(--on-butter);font-family:var(--display);font-weight:800;display:grid;place-items:center}
+.next li p{margin:4px 0 0}
+.actions{display:flex;flex-direction:column;gap:10px}
+.actions a.btn{text-decoration:none}
+.copied{font-size:13px;color:var(--ok);text-align:center;margin:0}
+.copied:empty{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  .lid{animation:none}.step.enter{animation:none}.pupil,.bar i{transition:none}
+}
+</style>
+
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <p class="preview-note" id="previewNote" hidden>Preview copy. Answers typed here are not saved. Host the file version to collect real leads.</p>
+
+  <div class="top">
+    <span class="brand">STOODANT</span>
+    <span class="counter" id="counter">Class 10 · Early access</span>
+  </div>
+  <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+
+  <div class="eyes" id="eyes" aria-hidden="true">
+    <span class="spark"><b></b><b></b></span>
+    <span class="eye"><span class="pupil"></span><span class="lid"></span></span>
+    <span class="bridge"></span>
+    <span class="eye"><span class="pupil"></span><span class="lid"></span></span>
+  </div>
+
+  <form id="leadForm" novalidate>
+
+    <!-- 0 · intro -->
+    <section class="step" data-step="0">
+      <span class="eyebrow">Class 10 · Boards 2027</span>
+      <h1>Board year needs <em>full attention.</em></h1>
+      <p class="lede">Live online classes with doctors and top professionals. Your child asks a doubt and gets it solved in the same moment, not next week.</p>
+      <div class="formats" aria-label="Class formats">
+        <div class="fmt"><strong>1:1</strong><span>Personal tutor</span></div>
+        <div class="fmt"><strong>1:5</strong><span>Small group</span></div>
+        <div class="fmt"><strong>1:10</strong><span>Live batch</span></div>
+      </div>
+      <div class="offer">
+        <span class="num">75</span>
+        <p><b>DAY EARLY ACCESS</b>Families who join the list first get better fees than our regular plans.</p>
+      </div>
+      <ul class="perks">
+        <li>Live classes with real teachers, never recorded videos</li>
+        <li>CBSE, ICSE and State Board · Maths, Science, SST</li>
+        <li>Free demo class before you pay anything</li>
+      </ul>
+      <div class="nav"><button type="button" class="btn yellow" data-next>Join early access <svg class="arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button></div>
+      <p class="small">6 quick questions · about 1 minute</p>
+    </section>
+
+    <!-- 1 · who -->
+    <section class="step" data-step="1" hidden>
+      <span class="eyebrow">Question 1</span>
+      <h2>Who is filling this form?</h2>
+      <div class="chips big" role="radiogroup" aria-label="Who is filling this form">
+        <label class="chip"><input type="radio" name="filledBy" id="fb-parent" value="Parent"><span>I'm the parent</span></label>
+        <label class="chip"><input type="radio" name="filledBy" id="fb-student" value="Student"><span>I'm the student</span></label>
+      </div>
+      <div class="field">
+        <label class="label" for="studentName" id="studentNameLabel">Student's first name</label>
+        <input type="text" id="studentName" name="studentName" autocomplete="given-name" placeholder="e.g. Aarav" maxlength="40">
+      </div>
+      <p class="err" id="err1"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="btn" data-next>Next</button></div>
+    </section>
+
+    <!-- 2 · board -->
+    <section class="step" data-step="2" hidden>
+      <span class="eyebrow">Question 2</span>
+      <h2>Which board and city?</h2>
+      <div class="field">
+        <span class="label">Board</span>
+        <div class="chips" role="radiogroup" aria-label="Board">
+          <label class="chip"><input type="radio" name="board" id="bd-cbse" value="CBSE"><span>CBSE</span></label>
+          <label class="chip"><input type="radio" name="board" id="bd-icse" value="ICSE"><span>ICSE</span></label>
+          <label class="chip"><input type="radio" name="board" id="bd-state" value="State Board"><span>State Board</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="city">City</label>
+        <input type="text" id="city" name="city" autocomplete="address-level2" placeholder="e.g. Jaipur" maxlength="50">
+      </div>
+      <div class="field">
+        <label class="label" for="school">School <span class="opt">(optional)</span></label>
+        <input type="text" id="school" name="school" placeholder="School name" maxlength="80">
+      </div>
+      <p class="err" id="err2"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="btn" data-next>Next</button></div>
+    </section>
+
+    <!-- 3 · subjects -->
+    <section class="step" data-step="3" hidden>
+      <span class="eyebrow">Question 3</span>
+      <h2 id="subjHead">Which subjects need tuition?</h2>
+      <p class="hint">Pick all that apply.</p>
+      <div class="chips" aria-label="Subjects">
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-maths" value="Maths"><span>Maths</span></label>
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-sci" value="Science"><span>Science</span></label>
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-sst" value="Social Science"><span>Social Science</span></label>
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-eng" value="English"><span>English</span></label>
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-hin" value="Hindi"><span>Hindi</span></label>
+        <label class="chip"><input type="checkbox" name="subjects" id="sb-oth" value="Other"><span>Other</span></label>
+      </div>
+      <div class="field">
+        <span class="label">What makes studying hard right now? <span class="opt">(optional)</span></span>
+        <div class="chips" aria-label="Current struggles">
+          <label class="chip"><input type="checkbox" name="struggles" id="st-concept" value="Concepts not clear"><span>Concepts not clear</span></label>
+          <label class="chip"><input type="checkbox" name="struggles" id="st-doubt" value="Hesitates to ask doubts"><span>Hesitates to ask doubts</span></label>
+          <label class="chip"><input type="checkbox" name="struggles" id="st-phone" value="Phone and distractions"><span>Phone &amp; distractions</span></label>
+          <label class="chip"><input type="checkbox" name="struggles" id="st-fear" value="Exam fear"><span>Exam fear</span></label>
+          <label class="chip"><input type="checkbox" name="struggles" id="st-write" value="Writing answers"><span>Writing answers</span></label>
+          <label class="chip"><input type="checkbox" name="struggles" id="st-time" value="Time management"><span>Time management</span></label>
+        </div>
+      </div>
+      <p class="err" id="err3"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="btn" data-next>Next</button></div>
+    </section>
+
+    <!-- 4 · marks -->
+    <section class="step" data-step="4" hidden>
+      <span class="eyebrow">Question 4</span>
+      <h2>Where are marks now, and <em>where should they go?</em></h2>
+      <div class="field">
+        <span class="label">Last exam percentage</span>
+        <div class="chips" role="radiogroup" aria-label="Last exam percentage">
+          <label class="chip"><input type="radio" name="lastBand" id="lb-1" value="Below 50%" data-mid="45"><span>Below 50%</span></label>
+          <label class="chip"><input type="radio" name="lastBand" id="lb-2" value="50–65%" data-mid="58"><span>50–65%</span></label>
+          <label class="chip"><input type="radio" name="lastBand" id="lb-3" value="65–80%" data-mid="72"><span>65–80%</span></label>
+          <label class="chip"><input type="radio" name="lastBand" id="lb-4" value="80–90%" data-mid="85"><span>80–90%</span></label>
+          <label class="chip"><input type="radio" name="lastBand" id="lb-5" value="90%+" data-mid="93"><span>90%+</span></label>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="meter-top">
+          <label class="label" for="target">Target in Class 10 boards</label>
+          <span class="jump" id="jump"></span>
+        </div>
+        <div class="meter-val" id="targetVal">90<small>%</small></div>
+        <input type="range" id="target" name="target" min="60" max="100" step="1" value="90" aria-describedby="targetNote">
+        <div class="scale" aria-hidden="true"><span>60</span><span>70</span><span>80</span><span>90</span><span>100</span></div>
+        <p class="note" id="targetNote">Slide to set the goal. Your tutor plans backwards from this number.</p>
+      </div>
+      <p class="err" id="err4"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="btn" data-next>Next</button></div>
+    </section>
+
+    <!-- 5 · format -->
+    <section class="step" data-step="5" hidden>
+      <span class="eyebrow">Question 5</span>
+      <h2>How would you like to learn?</h2>
+      <div class="cards" role="radiogroup" aria-label="Class format">
+        <label class="card"><input type="radio" name="format" id="fm-1" value="1:1 Personal"><span><span class="ratio">1:1</span><span class="txt"><b>Personal tutor</b><small>One teacher, only your child. Fully at your pace.</small></span></span></label>
+        <label class="card"><input type="radio" name="format" id="fm-5" value="1:5 Small group"><span><span class="ratio">1:5</span><span class="txt"><b>Small group</b><small>Five students. Every doubt still gets heard.</small></span></span></label>
+        <label class="card"><input type="radio" name="format" id="fm-10" value="1:10 Live batch"><span><span class="ratio">1:10</span><span class="txt"><b>Interactive batch</b><small>Ten students, live and lively. Lowest fee.</small></span></span></label>
+        <label class="card"><input type="radio" name="format" id="fm-help" value="Help me choose"><span><span class="ratio">?</span><span class="txt"><b>Help me choose</b><small>Our counsellor will suggest the right fit.</small></span></span></label>
+      </div>
+      <div class="field">
+        <span class="label">Best time for class</span>
+        <div class="chips" aria-label="Preferred time">
+          <label class="chip"><input type="checkbox" name="slots" id="sl-1" value="4–6 PM"><span>4–6 PM</span></label>
+          <label class="chip"><input type="checkbox" name="slots" id="sl-2" value="6–8 PM"><span>6–8 PM</span></label>
+          <label class="chip"><input type="checkbox" name="slots" id="sl-3" value="8–10 PM"><span>8–10 PM</span></label>
+          <label class="chip"><input type="checkbox" name="slots" id="sl-4" value="Weekends"><span>Weekends</span></label>
+        </div>
+      </div>
+      <p class="err" id="err5"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="button" class="btn" data-next>Next</button></div>
+    </section>
+
+    <!-- 6 · contact -->
+    <section class="step" data-step="6" hidden>
+      <span class="eyebrow">Last question</span>
+      <h2>Where should we send the <em>demo invite?</em></h2>
+      <div class="field">
+        <label class="label" for="parentName" id="parentNameLabel">Your name</label>
+        <input type="text" id="parentName" name="parentName" autocomplete="name" placeholder="Full name" maxlength="60">
+      </div>
+      <div class="field">
+        <label class="label" for="phone">WhatsApp number</label>
+        <div class="tel"><span>+91</span><input type="tel" id="phone" name="phone" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" maxlength="11"></div>
+        <p class="hint">We reply on WhatsApp. No spam, no daily calls.</p>
+      </div>
+      <label class="consent" for="consent"><input type="checkbox" id="consent" name="consent"><span id="consentText">I'm the parent or guardian and I agree that STOODANT can contact me on WhatsApp or phone about classes for my child.</span></label>
+      <p class="err" id="err6"></p>
+      <div class="nav"><button type="button" class="ghost" data-back>Back</button><button type="submit" class="btn yellow" id="submitBtn">Reserve early access</button></div>
+    </section>
+
+    <!-- 7 · done -->
+    <section class="step" data-step="7" hidden>
+      <span class="eyebrow">You're on the list</span>
+      <h2 id="doneHead">Early access reserved.</h2>
+      <div class="ref"><span>Your reference</span><b id="leadId">S10-0000</b></div>
+      <ol class="next">
+        <li><div><b>A STOODANT counsellor messages you on WhatsApp</b><p class="hint">Within 24 hours, from our official number.</p></div></li>
+        <li><div><b>Your child takes a free live demo class</b><p class="hint">With the tutor for the subject you picked.</p></div></li>
+        <li><div><b>Your early-access fee is held for you</b><p class="hint">Better than regular fees, for families on this list.</p></div></li>
+      </ol>
+      <div class="actions">
+        <a class="btn" id="waBtn" href="#" target="_blank" rel="noopener" hidden>Say hi on WhatsApp</a>
+        <button type="button" class="btn yellow" id="shareBtn">Copy link for another Class 10 parent</button>
+        <p class="copied" id="copied" aria-live="polite"></p>
+      </div>
+    </section>
+  </form>
+</main>
+
+<script>
+/* ===== EDIT THESE THREE LINES BEFORE GOING LIVE ===== */
+const CONFIG = {
+  SCRIPT_URL: "",     // Google Apps Script web-app URL (ends with /exec). Leads go to your Google Sheet.
+  WHATSAPP: "",       // STOODANT WhatsApp number with 91, digits only, e.g. "919876543210"
+  META_PIXEL_ID: ""   // Optional. Your Meta Pixel ID so Meta can count each lead.
+};
+/* ==================================================== */
+
+(function(){
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const form = $('#leadForm');
+  const steps = $$('.step', form);
+  const LAST_Q = 6;
+  let cur = 0;
+
+  const isPreview = !CONFIG.SCRIPT_URL;
+  if (isPreview) $('#previewNote').hidden = false;
+
+  // Meta Pixel (only when an ID is set and the page is hosted)
+  if (CONFIG.META_PIXEL_ID) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    try{ fbq('init', CONFIG.META_PIXEL_ID); fbq('track','PageView'); }catch(e){}
+  }
+
+  // Ad attribution from the link (utm_* and fbclid)
+  const qs = new URLSearchParams(location.search);
+  const src = {
+    utm_source: qs.get('utm_source') || '', utm_medium: qs.get('utm_medium') || '',
+    utm_campaign: qs.get('utm_campaign') || '', utm_content: qs.get('utm_content') || '',
+    fbclid: qs.get('fbclid') || ''
+  };
+
+  // ----- helpers -----
+  const val = name => { const el = form.querySelector(`[name="${name}"]:checked`); return el ? el.value : ''; };
+  const vals = name => $$(`[name="${name}"]:checked`, form).map(e => e.value);
+  const txt = id => ($('#'+id).value || '').trim();
+  const firstName = () => { const n = txt('studentName'); return n ? n.split(/\s+/)[0] : ''; };
+
+  // ----- eyes follow -----
+  const pupils = $$('.pupil');
+  function lookAt(x, y){
+    pupils.forEach(p => {
+      const eye = p.parentElement.getBoundingClientRect();
+      const cx = eye.left + eye.width/2, cy = eye.top + eye.height/2;
+      const a = Math.atan2(y - cy, x - cx), d = Math.min(9, Math.hypot(x-cx, y-cy)/18);
+      p.style.setProperty('--px', (Math.cos(a)*d).toFixed(1)+'px');
+      p.style.setProperty('--py', (Math.sin(a)*d).toFixed(1)+'px');
+    });
+  }
+  function lookAtEl(el){ const r = el.getBoundingClientRect(); lookAt(r.left + r.width/2, r.top + r.height/2); }
+  document.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') lookAt(e.clientX, e.clientY); });
+  form.addEventListener('focusin', e => lookAtEl(e.target));
+  form.addEventListener('change', e => lookAtEl(e.target.closest('label') || e.target));
+
+  // ----- personalised copy -----
+  function personalise(){
+    const who = val('filledBy'), n = firstName();
+    $('#studentNameLabel').textContent = who === 'Student' ? 'Your first name' : "Student's first name";
+    $('#parentNameLabel').textContent = who === 'Student' ? "Parent's name" : 'Your name';
+    $('#consentText').textContent = who === 'Student'
+      ? "My parent or guardian knows about this form and agrees that STOODANT can contact them on WhatsApp or phone about classes."
+      : "I'm the parent or guardian and I agree that STOODANT can contact me on WhatsApp or phone about classes for my child.";
+    $('#subjHead').textContent = n ? (who === 'Student' ? 'Which subjects do you need tuition in?' : `Which subjects does ${n} need tuition in?`) : 'Which subjects need tuition?';
+  }
+  form.addEventListener('input', personalise);
+  form.addEventListener('change', personalise);
+
+  // ----- target meter -----
+  const range = $('#target');
+  function updateTarget(){
+    const t = +range.value;
+    $('#targetVal').firstChild.nodeValue = t;
+    range.style.setProperty('--fill', ((t-60)/40*100)+'%');
+    const band = form.querySelector('[name="lastBand"]:checked');
+    const jump = $('#jump'), note = $('#targetNote');
+    if (!band){ jump.textContent = ''; note.textContent = 'Slide to set the goal. Your tutor plans backwards from this number.'; return; }
+    const diff = t - (+band.dataset.mid);
+    if (diff >= 15){ jump.textContent = `+${diff} points`; note.textContent = 'A big jump. It needs a daily plan and doubts cleared the same day.'; }
+    else if (diff >= 5){ jump.textContent = `+${diff} points`; note.textContent = 'A solid climb. Weak chapters first, then lots of practice papers.'; }
+    else if (diff > 0){ jump.textContent = `+${diff} points`; note.textContent = 'Close already. The last few marks come from answer-writing and revision.'; }
+    else { jump.textContent = 'Hold the score'; note.textContent = 'Protecting a high score takes steady revision right up to the boards.'; }
+  }
+  range.addEventListener('input', updateTarget);
+  form.addEventListener('change', e => { if (e.target.name === 'lastBand') updateTarget(); });
+  updateTarget();
+
+  // phone: digits only
+  $('#phone').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,'').slice(0,10); });
+
+  // ----- validation -----
+  function check(n){
+    switch(n){
+      case 1: if (!val('filledBy')) return 'Choose who is filling the form.';
+              if (txt('studentName').length < 2) return "Add the student's first name.";
+              return '';
+      case 2: if (!val('board')) return 'Choose a board.';
+              if (txt('city').length < 2) return 'Add your city.';
+              return '';
+      case 3: return vals('subjects').length ? '' : 'Pick at least one subject.';
+      case 4: return val('lastBand') ? '' : 'Choose the last exam percentage. A rough idea is fine.';
+      case 5: if (!val('format')) return 'Choose a class format, or tap "Help me choose".';
+              if (!vals('slots').length) return 'Pick at least one time that works.';
+              return '';
+      case 6: if (txt('parentName').length < 2) return 'Add a name we can greet you with.';
+              if (!/^[6-9]\d{9}$/.test(txt('phone'))) return 'Enter a 10-digit Indian mobile number.';
+              if (!$('#consent').checked) return 'Tick the box so we are allowed to contact you.';
+              return '';
+    }
+    return '';
+  }
+
+  // ----- navigation -----
+  function show(n){
+    steps.forEach(s => { s.hidden = +s.dataset.step !== n; s.classList.remove('enter'); });
+    const s = steps[n]; void s.offsetWidth; s.classList.add('enter');
+    cur = n;
+    const pct = n === 0 ? 0 : n > LAST_Q ? 100 : (n-1)/LAST_Q*100 + 8;
+    $('#barFill').style.width = pct + '%';
+    $('#counter').textContent = n === 0 ? 'Class 10 · Early access' : n > LAST_Q ? 'Done' : `${n} of ${LAST_Q}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const first = s.querySelector('input[type=text],input[type=tel]');
+    if (first && n > 0 && n <= LAST_Q && matchMedia('(pointer:fine)').matches) setTimeout(() => first.focus({preventScroll:true}), 250);
+  }
+  function next(){
+    if (cur >= 1 && cur <= LAST_Q){
+      const msg = check(cur); $('#err'+cur).textContent = msg;
+      if (msg) return;
+    }
+    show(cur + 1);
+  }
+  form.addEventListener('click', e => {
+    if (e.target.closest('[data-next]')) { e.preventDefault(); next(); }
+    if (e.target.closest('[data-back]')) { e.preventDefault(); show(Math.max(0, cur - 1)); }
+  });
+  form.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.matches('input[type=text],input[type=tel]')){
+      e.preventDefault(); if (cur === LAST_Q) form.requestSubmit ? form.requestSubmit() : submit(); else next();
+    }
+  });
+  // clear error as soon as they fix something
+  form.addEventListener('input', () => { if (cur>=1 && cur<=LAST_Q) $('#err'+cur).textContent = ''; });
+  form.addEventListener('change', () => { if (cur>=1 && cur<=LAST_Q) $('#err'+cur).textContent = ''; });
+
+  // ----- submit -----
+  function makeId(){
+    const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = '';
+    for (let i=0;i<5;i++) s += a[Math.floor(Math.random()*a.length)];
+    return 'S10-' + s;
+  }
+  async function submit(){
+    const msg = check(6); $('#err6').textContent = msg; if (msg) return;
+    const btn = $('#submitBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+    const leadId = makeId();
+    const payload = {
+      leadId, filledBy: val('filledBy'), studentName: txt('studentName'), board: val('board'),
+      city: txt('city'), school: txt('school'), subjects: vals('subjects').join(', '),
+      struggles: vals('struggles').join(', '), lastBand: val('lastBand'), target: range.value + '%',
+      format: val('format'), slots: vals('slots').join(', '), parentName: txt('parentName'),
+      phone: '+91' + txt('phone'), consent: 'Yes', page: location.href.split('?')[0], ...src
+    };
+    try{
+      if (!isPreview){
+        await fetch(CONFIG.SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+      }
+      try{ if (window.fbq) fbq('track', 'Lead', { content_name: 'Class 10 Early Access', content_category: payload.format }); }catch(e){}
+      done(payload);
+    }catch(err){
+      $('#err6').textContent = "Couldn't send. Check your internet connection and tap the button again.";
+      btn.disabled = false; btn.textContent = 'Reserve early access';
+    }
+  }
+  form.addEventListener('submit', e => { e.preventDefault(); submit(); });
+
+  function done(p){
+    $('#leadId').textContent = p.leadId;
+    $('#doneHead').textContent = `Early access reserved for ${p.studentName.split(/\s+/)[0]}.`;
+    $('#eyes').classList.add('happy');
+    pupils.forEach(x => { x.style.setProperty('--px','0px'); x.style.setProperty('--py','0px'); });
+    if (CONFIG.WHATSAPP){
+      const t = `Hi STOODANT, I just joined Class 10 early access. Ref ${p.leadId} (${p.studentName}, ${p.board}, ${p.format}).`;
+      const wa = $('#waBtn'); wa.href = `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(t)}`; wa.hidden = false;
+    }
+    show(7);
+  }
+
+  // share link (clean link, no personal data)
+  $('#shareBtn').addEventListener('click', async () => {
+    const link = location.href.split('?')[0].split('#')[0] + '?utm_source=referral&utm_medium=parent_share';
+    const out = $('#copied');
+    try{
+      if (navigator.share && !isPreview){ await navigator.share({ title:'STOODANT Class 10 early access', text:'Live Class 10 classes with doctors and top professionals. 75-day early access is open.', url: link }); return; }
+      await navigator.clipboard.writeText(link); out.textContent = 'Link copied. Paste it in your class parents group.';
+    }catch(e){ out.textContent = link; }
+  });
+
+  show(0);
+})();
+</script>
+
+</body>
+</html>
