@@ -9,7 +9,7 @@
  */
 
 const SHEET_NAME   = 'Leads';
-const NOTIFY_EMAIL = 'Jiteshsain20@gmail.com';   
+const NOTIFY_EMAIL = 'laurensharmaa@gmail.com';   // optional: your email to get a mail for every new lead
 
 const HEADERS = [
   'Timestamp', 'Lead ID', 'Status', 'Counsellor', 'Filled by', 'Student', 'Board', 'City', 'School',
@@ -38,17 +38,65 @@ function doPost(e) {
       d.utm_content, d.fbclid, d.page, '', '', ''
     ].map((v, i) => i === 0 ? v : clean(v)));
 
-    if (NOTIFY_EMAIL) {
-      MailApp.sendEmail(NOTIFY_EMAIL, 'New Class 10 lead: ' + d.studentName + ' (' + d.format + ')',
-        [d.parentName, d.phone, d.board + ', ' + d.city, d.subjects, 'Target ' + d.target, d.slots, 'Ref ' + d.leadId].join('\n'));
-    }
-    return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) })).setMimeType(ContentService.MimeType.JSON);
-  } finally {
-    lock.releaseLock();
+
+if (NOTIFY_EMAIL) {
+  try {
+    const subject = `New STOODANT Lead: ${d.studentName || 'Student'} (${d.format || 'Format not specified'})`;
+
+    const body = `
+A new student has completed the STOODANT Class 10 Early Access form.
+
+LEAD DETAILS
+----------------------------------------
+Lead ID: ${d.leadId || ''}
+Submitted at: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+
+STUDENT INFORMATION
+----------------------------------------
+Student name: ${d.studentName || ''}
+Board: ${d.board || ''}
+City: ${d.city || ''}
+School: ${d.school || 'Not provided'}
+Subjects: ${d.subjects || ''}
+Current exam percentage: ${d.lastBand || ''}
+Target percentage: ${d.target || ''}
+
+CLASS PREFERENCES
+----------------------------------------
+Preferred format: ${d.format || ''}
+Preferred time slots: ${d.slots || ''}
+Study struggles: ${d.struggles || 'Not provided'}
+
+CONTACT INFORMATION
+----------------------------------------
+Name: ${d.parentName || ''}
+WhatsApp: ${d.phone || ''}
+Filled by: ${d.filledBy || ''}
+Contact consent: ${d.consent || ''}
+
+ATTRIBUTION
+----------------------------------------
+Source: ${d.utm_source || 'Direct / Unknown'}
+Medium: ${d.utm_medium || ''}
+Campaign: ${d.utm_campaign || ''}
+Page: ${d.page || ''}
+
+Please follow up with this lead.
+    `.trim();
+
+    MailApp.sendEmail({
+      to: NOTIFY_EMAIL,
+      subject: subject,
+      body: body,
+      name: 'STOODANT Lead Notifications'
+    });
+
+  } catch (emailError) {
+    // Keep the lead saved even if the notification email fails.
+    console.error('Lead notification email failed: ' + emailError);
   }
 }
+  }}
 
 // Run once from the editor to create the header row before your first lead.
 function setup() {
